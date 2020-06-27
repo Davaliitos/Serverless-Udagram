@@ -136,9 +136,10 @@
                   "Action": [
                     "dynamodb:Scan",
                     "dynamodb:PutItem",
-                    "dynamodb:GetItem"
+                    "dynamodb:GetItem",
+                    "dynamodb:Query"
                   ],
-                  "Resource": "arn:aws:dynamodb:us-east-1:*:table/Todos-dev"
+                  "Resource": "arn:aws:dynamodb:us-east-1:*:table/TODOS-dev"
                 },
                 {
                   "Effect": "Allow",
@@ -198,7 +199,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-todo-app/dev/1593290684020-2020-06-27T20:44:44.020Z/serverless-todo-app.zip"
+          "S3Key": "serverless/serverless-todo-app/dev/1593298235757-2020-06-27T22:50:35.757Z/serverless-todo-app.zip"
         },
         "FunctionName": "serverless-todo-app-dev-Auth",
         "Handler": "src/lambda/auth/auth0authorizer.handler",
@@ -216,9 +217,10 @@
         },
         "Environment": {
           "Variables": {
-            "TODOS_TABLE": "Todos-dev",
+            "TODOS_TABLE": "TODOS-dev",
             "AUTH_0_SECRET_ID": "Auth0SecretTODO-dev",
-            "AUTH_0_SECRET_FIELD": "auth0Secret"
+            "AUTH_0_SECRET_FIELD": "auth0Secret",
+            "USER_ID_INDEX": "UserIdIndex"
           }
         }
       },
@@ -226,14 +228,14 @@
         "AuthLogGroup"
       ]
     },
-    "AuthLambdaVersionzUbDMzT86kJ0vHEm0sy9buzLzDEstghS3C58zRmY0": {
+    "AuthLambdaVersioncrqVuD2amlvc2dmcPkLsjMEFO8OfWelfDIVYh351eWc": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "AuthLambdaFunction"
         },
-        "CodeSha256": "sZcHynh5XT+lzqInmkfp8nevU3/lPoEX5s5M1fwVBjA="
+        "CodeSha256": "kKXteCDOweNkesrwOoKyZQGIFzsNyk+RWv2ZjoVG7A4="
       }
     },
     "GetTodosLambdaFunction": {
@@ -243,7 +245,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-todo-app/dev/1593290684020-2020-06-27T20:44:44.020Z/serverless-todo-app.zip"
+          "S3Key": "serverless/serverless-todo-app/dev/1593298235757-2020-06-27T22:50:35.757Z/serverless-todo-app.zip"
         },
         "FunctionName": "serverless-todo-app-dev-GetTodos",
         "Handler": "src/lambda/http/getTodos.handler",
@@ -261,9 +263,10 @@
         },
         "Environment": {
           "Variables": {
-            "TODOS_TABLE": "Todos-dev",
+            "TODOS_TABLE": "TODOS-dev",
             "AUTH_0_SECRET_ID": "Auth0SecretTODO-dev",
-            "AUTH_0_SECRET_FIELD": "auth0Secret"
+            "AUTH_0_SECRET_FIELD": "auth0Secret",
+            "USER_ID_INDEX": "UserIdIndex"
           }
         }
       },
@@ -271,14 +274,14 @@
         "GetTodosLogGroup"
       ]
     },
-    "GetTodosLambdaVersion9BoC6skFZklZHZTlPdjPouCzBNLY6rwVDoaiSc8SWPc": {
+    "GetTodosLambdaVersioney2vYLXs0l9pP0T5ucpjNVKL5WLhNytJh6I0yAJJE1I": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GetTodosLambdaFunction"
         },
-        "CodeSha256": "sZcHynh5XT+lzqInmkfp8nevU3/lPoEX5s5M1fwVBjA="
+        "CodeSha256": "kKXteCDOweNkesrwOoKyZQGIFzsNyk+RWv2ZjoVG7A4="
       }
     },
     "CreateTodoLambdaFunction": {
@@ -288,7 +291,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-todo-app/dev/1593290684020-2020-06-27T20:44:44.020Z/serverless-todo-app.zip"
+          "S3Key": "serverless/serverless-todo-app/dev/1593298235757-2020-06-27T22:50:35.757Z/serverless-todo-app.zip"
         },
         "FunctionName": "serverless-todo-app-dev-CreateTodo",
         "Handler": "src/lambda/http/createTodo.handler",
@@ -306,9 +309,10 @@
         },
         "Environment": {
           "Variables": {
-            "TODOS_TABLE": "Todos-dev",
+            "TODOS_TABLE": "TODOS-dev",
             "AUTH_0_SECRET_ID": "Auth0SecretTODO-dev",
-            "AUTH_0_SECRET_FIELD": "auth0Secret"
+            "AUTH_0_SECRET_FIELD": "auth0Secret",
+            "USER_ID_INDEX": "UserIdIndex"
           }
         }
       },
@@ -316,14 +320,14 @@
         "CreateTodoLogGroup"
       ]
     },
-    "CreateTodoLambdaVersionoiwk6OAmKy2roMPRqsUKZXzFGQwLPFQgNXAtRfxtw5s": {
+    "CreateTodoLambdaVersionzi4zO1f9HgU8RhQZ3hmhCjSDKQsKXWIX7HNRcZsw0wk": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "CreateTodoLambdaFunction"
         },
-        "CodeSha256": "sZcHynh5XT+lzqInmkfp8nevU3/lPoEX5s5M1fwVBjA="
+        "CodeSha256": "kKXteCDOweNkesrwOoKyZQGIFzsNyk+RWv2ZjoVG7A4="
       }
     },
     "ApiGatewayRestApi": {
@@ -526,7 +530,7 @@
         "Type": "TOKEN"
       }
     },
-    "ApiGatewayDeployment1593290645127": {
+    "ApiGatewayDeployment1593298200042": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -651,10 +655,32 @@
         }
       }
     },
+    "GatewayResponseDefault4XX": {
+      "Type": "AWS::ApiGateway::GatewayResponse",
+      "Properties": {
+        "ResponseParameters": {
+          "gatewayresponse.header.Access-Control-Allow-Origin": "'*'",
+          "gatewayresponse.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "gatewayresponse.header.Access-Control-Allow-Methods": "'GET,OPTIONS,POST'"
+        },
+        "ResponseType": "DEFAULT_4XX",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
     "TodosDynamoDBTable": {
       "Type": "AWS::DynamoDB::Table",
       "Properties": {
         "AttributeDefinitions": [
+          {
+            "AttributeName": "userId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "dueDate",
+            "AttributeType": "S"
+          },
           {
             "AttributeName": "todoId",
             "AttributeType": "S"
@@ -662,12 +688,30 @@
         ],
         "KeySchema": [
           {
-            "AttributeName": "todoId",
+            "AttributeName": "userId",
             "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "dueDate",
+            "KeyType": "RANGE"
           }
         ],
         "BillingMode": "PAY_PER_REQUEST",
-        "TableName": "Todos-dev"
+        "TableName": "TODOS-dev",
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "UserIdIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "todoId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ]
       }
     },
     "KMSKey": {
@@ -733,19 +777,19 @@
     "AuthLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "AuthLambdaVersionzUbDMzT86kJ0vHEm0sy9buzLzDEstghS3C58zRmY0"
+        "Ref": "AuthLambdaVersioncrqVuD2amlvc2dmcPkLsjMEFO8OfWelfDIVYh351eWc"
       }
     },
     "GetTodosLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GetTodosLambdaVersion9BoC6skFZklZHZTlPdjPouCzBNLY6rwVDoaiSc8SWPc"
+        "Ref": "GetTodosLambdaVersioney2vYLXs0l9pP0T5ucpjNVKL5WLhNytJh6I0yAJJE1I"
       }
     },
     "CreateTodoLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "CreateTodoLambdaVersionoiwk6OAmKy2roMPRqsUKZXzFGQwLPFQgNXAtRfxtw5s"
+        "Ref": "CreateTodoLambdaVersionzi4zO1f9HgU8RhQZ3hmhCjSDKQsKXWIX7HNRcZsw0wk"
       }
     },
     "ServiceEndpoint": {
