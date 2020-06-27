@@ -15,7 +15,9 @@
         "apiGateway": true
       },
       "environment": {
-        "TODOS_TABLE": "Todos-dev"
+        "TODOS_TABLE": "Todos-dev",
+        "AUTH_0_SECRET_ID": "Auth0SecretTODO-dev",
+        "AUTH_0_SECRET_FIELD": "auth0Secret"
       },
       "iamRoleStatements": [
         {
@@ -26,6 +28,27 @@
             "dynamodb:GetItem"
           ],
           "Resource": "arn:aws:dynamodb:us-east-1:*:table/Todos-dev"
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "secretsmanager:GetSecretValue"
+          ],
+          "Resource": {
+            "Ref": "Auth0Secret"
+          }
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "kms:Decrypt"
+          ],
+          "Resource": {
+            "Fn::GetAtt": [
+              "KMSKey",
+              "Arn"
+            ]
+          }
         }
       ],
       "versionFunctions": true,
@@ -86,6 +109,12 @@
                   }
                 ]
               }
+            }
+          },
+          "AuthLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/serverless-todo-app-dev-Auth"
             }
           },
           "GetTodosLogGroup": {
@@ -161,6 +190,12 @@
                         "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][0]"
                       },
                       {
+                        "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][1]"
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][2]"
+                      },
+                      {
                         "Effect": "Allow",
                         "Action": [
                           "xray:PutTraceSegments",
@@ -190,6 +225,51 @@
               }
             }
           },
+          "AuthLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/serverless-todo-app/dev/1593288071601-2020-06-27T20:01:11.601Z/serverless-todo-app.zip"
+              },
+              "FunctionName": "serverless-todo-app-dev-Auth",
+              "Handler": "src/lambda/auth/auth0authorizer.handler",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "TracingConfig": {
+                "Mode": "Active"
+              },
+              "Environment": {
+                "Variables": {
+                  "TODOS_TABLE": "Todos-dev",
+                  "AUTH_0_SECRET_ID": "Auth0SecretTODO-dev",
+                  "AUTH_0_SECRET_FIELD": "auth0Secret"
+                }
+              }
+            },
+            "DependsOn": [
+              "AuthLogGroup"
+            ]
+          },
+          "AuthLambdaVersionbKXuFtYu2WKbDGdaHmNTwsr0K8Z24N2ga7gQu7WEpc": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "AuthLambdaFunction"
+              },
+              "CodeSha256": "JkCQWSSOSoIol0ALC9dP1VsP2u9/ilfbH/MnQeczD7c="
+            }
+          },
           "GetTodosLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
@@ -197,7 +277,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-todo-app/dev/1593146911045-2020-06-26T04:48:31.045Z/serverless-todo-app.zip"
+                "S3Key": "serverless/serverless-todo-app/dev/1593288071601-2020-06-27T20:01:11.601Z/serverless-todo-app.zip"
               },
               "FunctionName": "serverless-todo-app-dev-GetTodos",
               "Handler": "src/lambda/http/getTodos.handler",
@@ -215,7 +295,9 @@
               },
               "Environment": {
                 "Variables": {
-                  "TODOS_TABLE": "Todos-dev"
+                  "TODOS_TABLE": "Todos-dev",
+                  "AUTH_0_SECRET_ID": "Auth0SecretTODO-dev",
+                  "AUTH_0_SECRET_FIELD": "auth0Secret"
                 }
               }
             },
@@ -223,14 +305,14 @@
               "GetTodosLogGroup"
             ]
           },
-          "GetTodosLambdaVersionrWC4NtUHkCBFW9QuKu48K693s7ahIYPbR0U29SyA0": {
+          "GetTodosLambdaVersiongavmqED731kLGWuAFvYEf61SDnBxm4HlIiYhogDPW8": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetTodosLambdaFunction"
               },
-              "CodeSha256": "5oy689R6EnZuUf0Xsm3Q7LtAcVZEuy5jcaCjJaBOrYg="
+              "CodeSha256": "JkCQWSSOSoIol0ALC9dP1VsP2u9/ilfbH/MnQeczD7c="
             }
           },
           "CreateTodoLambdaFunction": {
@@ -240,7 +322,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-todo-app/dev/1593146911045-2020-06-26T04:48:31.045Z/serverless-todo-app.zip"
+                "S3Key": "serverless/serverless-todo-app/dev/1593288071601-2020-06-27T20:01:11.601Z/serverless-todo-app.zip"
               },
               "FunctionName": "serverless-todo-app-dev-CreateTodo",
               "Handler": "src/lambda/http/createTodo.handler",
@@ -258,7 +340,9 @@
               },
               "Environment": {
                 "Variables": {
-                  "TODOS_TABLE": "Todos-dev"
+                  "TODOS_TABLE": "Todos-dev",
+                  "AUTH_0_SECRET_ID": "Auth0SecretTODO-dev",
+                  "AUTH_0_SECRET_FIELD": "auth0Secret"
                 }
               }
             },
@@ -266,14 +350,14 @@
               "CreateTodoLogGroup"
             ]
           },
-          "CreateTodoLambdaVersionK69kaNf20gkhcczi2TCgCcM8bLBu9gQ7ewfEYgx9w": {
+          "CreateTodoLambdaVersionjxr2s7VUcKa1Aw9vympqOEIux7OY9GWb4chZqZKxN00": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateTodoLambdaFunction"
               },
-              "CodeSha256": "5oy689R6EnZuUf0Xsm3Q7LtAcVZEuy5jcaCjJaBOrYg="
+              "CodeSha256": "JkCQWSSOSoIol0ALC9dP1VsP2u9/ilfbH/MnQeczD7c="
             }
           },
           "ApiGatewayRestApi": {
@@ -360,7 +444,10 @@
                 "Ref": "ApiGatewayRestApi"
               },
               "ApiKeyRequired": false,
-              "AuthorizationType": "NONE",
+              "AuthorizationType": "CUSTOM",
+              "AuthorizerId": {
+                "Ref": "AuthApiGatewayAuthorizer"
+              },
               "Integration": {
                 "IntegrationHttpMethod": "POST",
                 "Type": "AWS_PROXY",
@@ -389,7 +476,8 @@
                 }
               },
               "MethodResponses": []
-            }
+            },
+            "DependsOn": "AuthApiGatewayAuthorizer"
           },
           "ApiGatewayMethodTodosPost": {
             "Type": "AWS::ApiGateway::Method",
@@ -434,7 +522,41 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1593146865881": {
+          "AuthApiGatewayAuthorizer": {
+            "Type": "AWS::ApiGateway::Authorizer",
+            "Properties": {
+              "IdentitySource": "method.request.header.Authorization",
+              "Name": "Auth",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "AuthorizerUri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "AuthLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              },
+              "Type": "TOKEN"
+            }
+          },
+          "ApiGatewayDeployment1593288032437": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -454,6 +576,43 @@
               "FunctionName": {
                 "Fn::GetAtt": [
                   "GetTodosLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "AuthLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "AuthLambdaFunction",
                   "Arn"
                 ]
               },
@@ -540,6 +699,59 @@
               "BillingMode": "PAY_PER_REQUEST",
               "TableName": "Todos-dev"
             }
+          },
+          "KMSKey": {
+            "Type": "AWS::KMS::Key",
+            "Properties": {
+              "Description": "KMS key to encrypt Auth0 secret",
+              "KeyPolicy": {
+                "Version": "2012-10-17",
+                "Id": "key-default-1",
+                "Statement": [
+                  {
+                    "Sid": "Allow administration of the key",
+                    "Effect": "Allow",
+                    "Principal": {
+                      "AWS": {
+                        "Fn::Join": [
+                          ":",
+                          [
+                            "arn:aws:iam:",
+                            {
+                              "Ref": "AWS::AccountId"
+                            },
+                            "root"
+                          ]
+                        ]
+                      }
+                    },
+                    "Action": [
+                      "kms:*"
+                    ],
+                    "Resource": "*"
+                  }
+                ]
+              }
+            }
+          },
+          "KMSKeyAlias": {
+            "Type": "AWS::KMS::Alias",
+            "Properties": {
+              "AliasName": "alias/auth0KEY-dev",
+              "TargetKeyId": {
+                "Ref": "KMSKey"
+              }
+            }
+          },
+          "Auth0Secret": {
+            "Type": "AWS::SecretsManager::Secret",
+            "Properties": {
+              "Name": "Auth0SecretTODO-dev",
+              "Description": "Auth0 secret",
+              "KmsKeyId": {
+                "Ref": "KMSKey"
+              }
+            }
           }
         },
         "Outputs": {
@@ -548,16 +760,22 @@
               "Ref": "ServerlessDeploymentBucket"
             }
           },
+          "AuthLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "AuthLambdaVersionbKXuFtYu2WKbDGdaHmNTwsr0K8Z24N2ga7gQu7WEpc"
+            }
+          },
           "GetTodosLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetTodosLambdaVersionrWC4NtUHkCBFW9QuKu48K693s7ahIYPbR0U29SyA0"
+              "Ref": "GetTodosLambdaVersiongavmqED731kLGWuAFvYEf61SDnBxm4HlIiYhogDPW8"
             }
           },
           "CreateTodoLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateTodoLambdaVersionK69kaNf20gkhcczi2TCgCcM8bLBu9gQ7ewfEYgx9w"
+              "Ref": "CreateTodoLambdaVersionjxr2s7VUcKa1Aw9vympqOEIux7OY9GWb4chZqZKxN00"
             }
           },
           "ServiceEndpoint": {
@@ -656,10 +874,24 @@
     },
     "plugins": [
       "serverless-webpack",
+      "serverless-reqvalidator-plugin",
       "serverless-iam-roles-per-function"
     ],
     "pluginsData": {},
     "functions": {
+      "Auth": {
+        "handler": "src/lambda/auth/auth0authorizer.handler",
+        "events": [],
+        "name": "serverless-todo-app-dev-Auth",
+        "package": {
+          "artifact": ".serverless\\serverless-todo-app.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "AuthLambdaVersionbKXuFtYu2WKbDGdaHmNTwsr0K8Z24N2ga7gQu7WEpc"
+      },
       "GetTodos": {
         "handler": "src/lambda/http/getTodos.handler",
         "events": [
@@ -686,6 +918,14 @@
                 ],
                 "allowCredentials": false
               },
+              "authorizer": {
+                "name": "Auth",
+                "arn": {
+                  "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"AuthLambdaPermissionApiGateway\"][\"Properties\"][\"FunctionName\"]"
+                },
+                "managedExternally": false,
+                "identitySource": "method.request.header.Authorization"
+              },
               "integration": "AWS_PROXY"
             }
           }
@@ -698,7 +938,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetTodosLambdaVersionrWC4NtUHkCBFW9QuKu48K693s7ahIYPbR0U29SyA0"
+        "versionLogicalId": "GetTodosLambdaVersiongavmqED731kLGWuAFvYEf61SDnBxm4HlIiYhogDPW8"
       },
       "CreateTodo": {
         "handler": "src/lambda/http/createTodo.handler",
@@ -738,7 +978,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "CreateTodoLambdaVersionK69kaNf20gkhcczi2TCgCcM8bLBu9gQ7ewfEYgx9w"
+        "versionLogicalId": "CreateTodoLambdaVersionjxr2s7VUcKa1Aw9vympqOEIux7OY9GWb4chZqZKxN00"
       }
     },
     "resources": {
@@ -761,6 +1001,59 @@
             "BillingMode": "PAY_PER_REQUEST",
             "TableName": "Todos-dev"
           }
+        },
+        "KMSKey": {
+          "Type": "AWS::KMS::Key",
+          "Properties": {
+            "Description": "KMS key to encrypt Auth0 secret",
+            "KeyPolicy": {
+              "Version": "2012-10-17",
+              "Id": "key-default-1",
+              "Statement": [
+                {
+                  "Sid": "Allow administration of the key",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": {
+                      "Fn::Join": [
+                        ":",
+                        [
+                          "arn:aws:iam:",
+                          {
+                            "Ref": "AWS::AccountId"
+                          },
+                          "root"
+                        ]
+                      ]
+                    }
+                  },
+                  "Action": [
+                    "kms:*"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        },
+        "KMSKeyAlias": {
+          "Type": "AWS::KMS::Alias",
+          "Properties": {
+            "AliasName": "alias/auth0KEY-dev",
+            "TargetKeyId": {
+              "Ref": "KMSKey"
+            }
+          }
+        },
+        "Auth0Secret": {
+          "Type": "AWS::SecretsManager::Secret",
+          "Properties": {
+            "Name": "Auth0SecretTODO-dev",
+            "Description": "Auth0 secret",
+            "KmsKeyId": {
+              "Ref": "KMSKey"
+            }
+          }
         }
       },
       "Outputs": {}
@@ -770,7 +1063,7 @@
     "isDashboardMonitoringPreconfigured": false
   },
   "package": {
-    "artifactDirectoryName": "serverless/serverless-todo-app/dev/1593146911045-2020-06-26T04:48:31.045Z",
+    "artifactDirectoryName": "serverless/serverless-todo-app/dev/1593288071601-2020-06-27T20:01:11.601Z",
     "artifact": ""
   }
 }
