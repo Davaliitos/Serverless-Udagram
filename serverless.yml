@@ -60,6 +60,7 @@ functions:
          method: post
          path: todos
          cors: true
+         authorizer: Auth
 
 
 resources:
