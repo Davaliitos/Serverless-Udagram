@@ -37,3 +37,9 @@ export async function updateTodo(
 )  {
     todoAccess.updateTodo(todoId, updatedTodoRequest);
 }
+
+export async function deleteTodo(
+    todoId: string
+){
+    todoAccess.deleteTodo(todoId);
+}
