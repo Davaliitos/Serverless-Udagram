@@ -40,6 +40,6 @@ export async function updateTodo(
 
 export async function deleteTodo(
     todoId: string
-){
-    todoAccess.deleteTodo(todoId);
+): Promise<AWS.DynamoDB.AttributeMap>{
+    return await todoAccess.deleteTodo(todoId);
 }

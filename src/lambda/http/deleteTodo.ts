@@ -7,7 +7,8 @@ export const handler: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent
     
     const todoId = event.pathParameters.todoId;
 
-    deleteTodo(todoId);
+    const answer = await deleteTodo(todoId);
+    console.log(answer);
 
     return {
         statusCode: 200,

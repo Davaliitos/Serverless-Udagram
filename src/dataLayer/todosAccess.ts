@@ -66,19 +66,15 @@ export class TodoAccess{
         return items;
     }
 
-    async deleteTodo(todoId: string){
-        this.docClient.delete({
+    async deleteTodo(todoId: string) : Promise<AWS.DynamoDB.AttributeMap> {
+        const result = await this.docClient.delete({
             TableName: this.todosTable,
             Key:{
                 'todoId' : todoId
             }
-        }, function(err, data){
-            if(err){
-                console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-            } else{
-                console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
-            }
-        })
+        }).promise();
+        const items = result.Attributes;
+        return items;
     }
 
 
