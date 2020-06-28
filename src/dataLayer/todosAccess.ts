@@ -5,12 +5,14 @@ import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 //const XAWS = AWSXRay.captureAWS(AWS);
 
 import { TodoItem } from '../models/TodoItem';
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest';
 
 export class TodoAccess{
 
     constructor(
         private readonly docClient: DocumentClient = createDynamoDBClient(),
-        private readonly todosTable = process.env.TODOS_TABLE
+        private readonly todosTable = process.env.TODOS_TABLE,
+        private readonly userIdIndex = process.env.USER_ID_INDEX
     ){}
 
     async getAllTodos(userId: string): Promise<TodoItem[]>{
@@ -20,6 +22,7 @@ export class TodoAccess{
         
         const result = await this.docClient.query({
             TableName: this.todosTable,
+            IndexName: this.userIdIndex,
             KeyConditionExpression: 'userId = :userId',
             ExpressionAttributeValues: {
                 ':userId' : userId
@@ -40,6 +43,32 @@ export class TodoAccess{
 
         return todo;
     }
+
+    async updateTodo(todoId: string, todo: UpdateTodoRequest) {
+        this.docClient.update({
+            TableName: this.todosTable,
+            Key:{
+                'todoId' : todoId
+            },
+            UpdateExpression: 'set #name = :name, done = :done, dueDate = :dueDate',
+            ExpressionAttributeValues: {
+                ':name' : todo.name,
+                ':done' : todo.done,
+                ':dueDate' : todo.dueDate
+            },
+            ExpressionAttributeNames:{
+                '#name' : 'name'
+            },
+            ReturnValues:"UPDATED_NEW"
+        }, function(err, data){
+            if(err){
+                console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+            } else{
+                console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
+            }
+        });
+    }
+
 
 }
 
