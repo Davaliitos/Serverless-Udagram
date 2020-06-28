@@ -34,8 +34,8 @@ export async function createTodo(
 export async function updateTodo(
     todoId: string,
     updatedTodoRequest: UpdateTodoRequest
-)  {
-    todoAccess.updateTodo(todoId, updatedTodoRequest);
+) : Promise<AWS.DynamoDB.AttributeMap> {
+    return await todoAccess.updateTodo(todoId, updatedTodoRequest);
 }
 
 export async function deleteTodo(
