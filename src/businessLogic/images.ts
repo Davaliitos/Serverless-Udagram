@@ -1,10 +1,10 @@
-import { S3Access } from '../dataLayer/s3Access';
+import { ImagesAccess } from '../dataLayer/imagesAccess';
 
-const s3Access = new S3Access();
+const imagesAccess = new ImagesAccess();
 
 export async function getUploadUrl(todoId: string): Promise<string>{
 
-    return await s3Access.getUploadUrl(todoId);
+    return await imagesAccess.getUploadUrl(todoId);
 
 }
 
