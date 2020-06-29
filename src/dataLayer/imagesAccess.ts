@@ -3,7 +3,7 @@ import * as AWSXRay from 'aws-xray-sdk';
 
 const XAWS = AWSXRay.captureAWS(AWS);
 
-export class S3Access{
+export class ImagesAccess{
 
     constructor(
         private readonly s3: AWS.S3 = createS3Client(),
