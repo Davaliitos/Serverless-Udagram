@@ -12,7 +12,8 @@ export class TodoAccess{
     constructor(
         private readonly docClient: DocumentClient = createDynamoDBClient(),
         private readonly todosTable = process.env.TODOS_TABLE,
-        private readonly userIdIndex = process.env.USER_ID_INDEX
+        private readonly userIdIndex = process.env.USER_ID_INDEX,
+        private readonly imagesBucket = process.env.IMAGES_S3_BUCKET
     ){}
 
     async getAllTodos(userId: string): Promise<TodoItem[]>{
@@ -77,6 +78,22 @@ export class TodoAccess{
         return items;
     }
 
+    async updateImage(todoId: string) : Promise<AWS.DynamoDB.AttributeMap>{
+        const result = await this.docClient.update({
+            TableName: this.todosTable,
+            Key:{
+                'todoId' : todoId
+            },
+            UpdateExpression: 'set attachmentUrl = :attachmentUrl',
+            ExpressionAttributeValues: {
+                ':attachmentUrl' : 'https://' + this.imagesBucket + '.s3.amazonaws.com/' + todoId
+            },
+            ReturnValues:"UPDATED_NEW"
+        }).promise();
+
+        const items = result.Attributes;
+        return items;
+    }
 
 }
 

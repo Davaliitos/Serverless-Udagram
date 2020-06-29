@@ -43,3 +43,7 @@ export async function deleteTodo(
 ): Promise<AWS.DynamoDB.AttributeMap>{
     return await todoAccess.deleteTodo(todoId);
 }
+
+export async function updateImage(todoId: string) : Promise<AWS.DynamoDB.AttributeMap>{
+    return await todoAccess.updateImage(todoId);
+}
